@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { validatePassword, validateUsername } from "../functions/validations";
+import { getUserByUsername } from "../functions/liveChatService";
+import { useNavigate } from "react-router-dom";
 
-const RegistrationForm = (props) => {
+const RegistrationForm = () => {
+
+    const navigate = useNavigate();
 
     const initialErrorState = {
         username: {
@@ -43,13 +47,10 @@ const RegistrationForm = (props) => {
         fetch(`${process.env.REACT_APP_WS_BASE_URL}/register`, {
             method: 'POST',
             mode: 'cors', // no-cors, *cors, same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             headers: {
                 'content-type': 'application/json',
-                'Access-Control-Allow-Origin':'*'
-            },
-            redirect: 'follow', // manual, *follow, error
-            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-
+
+            }, 
             body: JSON.stringify(user)
         }).then(response => {
             if(!response.ok) {
@@ -66,11 +67,16 @@ const RegistrationForm = (props) => {
             }
             return response.json();
         }).then(data => {
-            if(data!=undefined) {
-                localStorage.setItem("token", data.token)
-                console.log(localStorage.getItem("token"))
+            if(data !== undefined) {
+                localStorage.setItem("token", data.token);
+                return getUserByUsername(user.username);
             }
-        })
+        }).then(jsonData => {
+            if(jsonData !== undefined) {
+                localStorage.setItem("user", JSON.stringify(jsonData));
+                navigate("/", {replace: true});
+            }
+        });
     }
 
     return (

@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { validatePassword, validateUsername } from "../functions/validations";
+import { getUserByUsername } from "../functions/liveChatService";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
+
+    const navigate = useNavigate();
 
     const initialErrorState = {
         username: {
@@ -56,18 +60,23 @@ const LoginForm = () => {
                             errorMsg: msg
                         }
                     });
-                })
+                });
                 return;
             }
             return response.json();
         }).then(data => {
-            if(data!=undefined) {
-                localStorage.setItem("token", data.token)
-                console.log(localStorage.getItem("token"))
+            if(data !== undefined) {
+                localStorage.setItem("token", data.token);
+                return getUserByUsername(user.username);
+            }
+        }).then(jsonData => {
+            if(jsonData !== undefined) {
+                localStorage.setItem("user", JSON.stringify(jsonData));
+                navigate("/", {replace: true});
             }
         });
     }
-
+ 
     return(
         <div className="login-section">
             <h1>Login</h1>
