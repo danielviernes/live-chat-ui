@@ -2,6 +2,8 @@ import { useState } from "react";
 import { validatePassword, validateUsername } from "../functions/validations";
 import { getUserByUsername } from "../functions/liveChatService";
 import { useNavigate } from "react-router-dom";
+import { LiveChatException } from "../functions/exceptions";
+import { NotificationTypes } from "../util/NotificationTypes";
 
 const LoginForm = () => {
 
@@ -67,7 +69,19 @@ const LoginForm = () => {
         }).then(data => {
             if(data !== undefined) {
                 localStorage.setItem("token", data.token);
-                return getUserByUsername(user.username);
+                try {
+                    return getUserByUsername(user.username);
+                } catch(e) {
+                    if(e instanceof LiveChatException) {
+                        console.log(e.error);
+                        navigate("/", {replace: true,
+                             props: {notification: {
+                                type: NotificationTypes.ERROR,
+                                message: "Token has expired. Please re-login."
+                             }}});
+                    }
+                    //else; token not expired, show error message
+                }
             }
         }).then(jsonData => {
             if(jsonData !== undefined) {

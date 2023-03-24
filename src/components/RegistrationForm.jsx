@@ -44,7 +44,7 @@ const RegistrationForm = () => {
             password: event.target.password.value
         };
     
-        fetch(`${process.env.REACT_APP_WS_BASE_URL}/register`, {
+        fetch(`${process.env.REACT_APP_WS_BASE_URL}/authenticate/register`, {
             method: 'POST',
             mode: 'cors', // no-cors, *cors, same-origin
             headers: {
