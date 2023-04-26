@@ -54,12 +54,12 @@ const LoginForm = () => {
             body: JSON.stringify(user)
         }).then(response => {
             if(!response.ok) {
-                response.text().then(msg => {
+                response.json().then(data => {
                     setErrors({
                         ...errors,
                         username: 
                         {
-                            errorMsg: msg
+                            errorMsg: data.message
                         }
                     });
                 });

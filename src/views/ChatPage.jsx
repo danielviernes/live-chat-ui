@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Chatbox from "../components/fragments/Chatbox";
 
 const ChatPage = () => {
 
@@ -29,6 +30,7 @@ const ChatPage = () => {
             <div>
                 Welcome {JSON.parse(localStorage.getItem("user")).username}! This is the chatbox page.
                 <button onClick={handleSignOut}>Sign Out</button>
+                <Chatbox />
             </div>
             : 
             null
